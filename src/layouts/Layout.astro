@@ -20,13 +20,13 @@ const { title } = Astro.props;
 	</head>
 	<body>
     <div id="app" class="h-screen gap-2 p-2" >
-    <aside class="[grid-area:aside] flex-col flex overflow-y-auto text-sky-700  ">
+    <aside class="[grid-area:aside] flex-col flex overflow-y-auto  ">
         <AsideMenu/>
       </aside>
-    <main class="[grid-area:main] text-lime-300 bg-yellow-200">
+    <main class="[grid-area:main] ">
       <slot />
       </main>
-    <footer class="[grid-area:player] min-h-[100px] text-cyan-500 bg-zinc-900 rounded-lg overflow-y-auto">Player</footer>
+    <footer class="[grid-area:player] min-h-[100px]  bg-zinc-900 rounded-lg overflow-y-auto">Player</footer>
     </div>
 	</body>
 </html>
@@ -37,6 +37,7 @@ const { title } = Astro.props;
 grid-template-areas: "aside main main" "player player player" ;
 grid-template-columns: 350px 1fr ;
 grid-template-rows: 1fr auto ;
+color: white;
 
 }
 </style>

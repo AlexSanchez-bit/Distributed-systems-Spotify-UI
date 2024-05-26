@@ -14,7 +14,7 @@ import BurgerIcon from '../icons/BurgerIcon.astro'
 import {playlists} from '../lib/data'
 ---
 
-<nav class="flex flex-col flex-1 gap-2">
+<nav class="flex flex-col flex-1 gap-2 overflow-hidden">
   <div class="bg-zinc-900 rounded-lg p-2">
     <ul>
      <SideMenuItem href='/'>
@@ -49,6 +49,10 @@ import {playlists} from '../lib/data'
         <div class=" rounded-s-full rounded-e-full  bg-zinc-800 p-1 px-2 text-xs text-zinc-300">Albums</div>
       </SideMenuItem>
 
+    </ul>
+
+    <ul class="overflow-y-auto">
+
      <SideMenuItem href='/#'>
         <div class="flex justify-between flex-row flex-1">
           <div class="flex flex-row items-center gap-4">
@@ -60,11 +64,11 @@ import {playlists} from '../lib/data'
           </div>
         </div>
       </SideMenuItem>
-    </ul>
-
     {
       playlists.map(playlist=><SideMenuCard playlist={playlist}></SideMenuCard>)
     }
+    </ul>
+
 
   </div>
 </nav>
