@@ -27,7 +27,7 @@ transition:name=`playlist ${id} image`
   </picture>
 
   <div class="flex flex-auto flex-col truncate items-start px-2">
-  <h4>{title}</h4>
-    <p class="text-xs">{artistsString}</p>
+  <h4 transition:name=`playlist ${playlist.id} title`>{title}</h4>
+    <p class="text-xs" transition:name=`playlist ${playlist.id} artists`>{artistsString}</p>
   </div>
 </a>
