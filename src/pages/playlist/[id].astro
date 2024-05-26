@@ -1,0 +1,44 @@
+
+---
+import Layout from '../../layouts/Layout.astro';
+import { playlists, playlists } from '../../lib/data';
+import PlaylistItemCard from '../../components/PlaylistItemCard.astro'
+
+
+import {allPlaylists,songs} from '../../lib/data.ts'
+
+const {id} = Astro.params
+
+
+const playlist = allPlaylists.find(playlist=>playlist.id === id)
+
+const playlistSongs = songs.filter(song=> song.albumId === playlist.albumId )
+
+---
+
+<Layout title="Spotify">
+
+<div
+ id="play-list-container"
+ class="relative transition-all duration-1000 bg-zinc-800 h-full overflow-x-hidden flex flex-col rounded"
+    transition:name=`playlist ${id} box`
+>
+
+    <header class="flex flex-col gap-8 px-6">
+
+      <picture class="w-52 h-52 aspect-square flex-none rounded-md">
+      <img src={playlist.cover} alt={`Cover of ${playlist.title}`} class="rounded-md object-cover w-full "
+      transition:name=`playlist ${playlist.id} image`
+          >
+        </picture>
+
+    </header>
+
+  <div class="relative z-10 px-6 ">
+  <!--<Greetings/> -->
+  </div>
+
+  <div class="absolute bg-gradient-to-t inset-0 from-zinc-900 via-zinc-900/80"></div>
+</div>
+</Layout>
+<style></style>

@@ -14,12 +14,14 @@ interface Props {
 const artistsString = artists.join(', ')
 ---
 
-<a href={`playlist/${id}`}
-  class="playlist-item flex text-zinc-200 relative p-2 overflow-hidden items-center gap-5 rounded-md hover:bg-zinc-500"
+<a href={`/playlist/${id}`}
+  class="playlist-item flex text-zinc-200 relative p-2 overflow-hidden items-center gap-5 rounded-md hover:bg-zinc-500
+  "
 
 >
-<picture class="w-12 h-12 flex-none">
-<img src={cover} alt={`Cover of ${title}`}>
+<picture class="w-12 h-12 flex-none rounded-md aspect-square ">
+<img src={cover} alt={`Cover of ${title}`} class="rounded-sm"
+    >
   </picture>
 
   <div class="flex flex-auto flex-col truncate">

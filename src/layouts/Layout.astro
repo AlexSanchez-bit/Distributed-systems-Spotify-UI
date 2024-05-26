@@ -1,5 +1,7 @@
 ---
+import { ViewTransitions } from 'astro:transitions';
 import AsideMenu from '../components/AsideMenu.astro'
+
 interface Props {
 	title: string;
 }
@@ -17,13 +19,14 @@ const { title } = Astro.props;
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+    <ViewTransitions fallback='none'></ViewTransitions>
 	</head>
 	<body>
     <div id="app" class="h-screen gap-2 p-2" >
     <aside class="[grid-area:aside] flex-col flex overflow-y-auto  ">
         <AsideMenu/>
       </aside>
-    <main class="[grid-area:main] ">
+    <main class="[grid-area:main] bg-zinc-900">
       <slot />
       </main>
     <footer class="[grid-area:player] min-h-[100px]  bg-zinc-900 rounded-lg overflow-y-auto">Player</footer>

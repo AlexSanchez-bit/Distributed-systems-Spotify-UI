@@ -15,11 +15,14 @@ import PlaylistItemCard from '../components/PlaylistItemCard.astro'
   <!--<Greetings/> -->
 
   <h1>Buenos dias</h1>
-
-  {
+<div class="flex flex-wrap mt-6 gap-4">
+    {
     playlists.map(playlist=> <PlaylistItemCard playlist={playlist}></PlaylistItemCard>)
     }
+</div>
   </div>
+
+  <div class="absolute bg-gradient-to-t inset-0 from-zinc-900 via-zinc-900/80"></div>
 </div>
 </Layout>
 <style></style>
