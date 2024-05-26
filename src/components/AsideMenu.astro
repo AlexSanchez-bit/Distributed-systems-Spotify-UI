@@ -1,0 +1,70 @@
+---
+import SideMenuItem from './SideMenuItem.astro'
+import SideMenuCard from './SideMenuCard.astro'
+
+
+import HomeIcon from '../icons/HomeIcon.astro'
+import SearchIcon from '../icons/SearchIcon.astro'
+import LibraryIcon from '../icons/LibraryIcon.astro'
+import PlusIcon from '../icons/PlusIcon.astro'
+import NextIcon from '../icons/NextIcon.astro'
+import BurgerIcon from '../icons/BurgerIcon.astro'
+
+
+import {playlists} from '../lib/data'
+---
+
+<nav class="flex flex-col flex-1 gap-2">
+  <div class="bg-zinc-900 rounded-lg p-2">
+    <ul>
+     <SideMenuItem href='/'>
+        <HomeIcon></HomeIcon>
+        Home
+      </SideMenuItem>
+     <SideMenuItem href='/#'>
+        <SearchIcon></SearchIcon>
+        Search
+      </SideMenuItem>
+    </ul>
+  </div>
+  <div class="bg-zinc-900 rounded-lg p-2 flex-1">
+
+    <ul>
+     <SideMenuItem href='/#'>
+        <div class="flex justify-between flex-row flex-1">
+          <div class="flex flex-row items-center gap-4">
+    <LibraryIcon></LibraryIcon>
+        Your Library
+          </div>
+          <div class="flex flex-row items-center gap-6">
+        <PlusIcon></PlusIcon>
+        <NextIcon></NextIcon>
+          </div>
+        </div>
+      </SideMenuItem>
+
+      <SideMenuItem>
+        <div class=" rounded-s-full rounded-e-full  bg-zinc-800 p-1 px-2 text-xs text-zinc-300">PlayList</div>
+        <div class=" rounded-s-full rounded-e-full  bg-zinc-800 p-1 px-2 text-xs text-zinc-300">Artists</div>
+        <div class=" rounded-s-full rounded-e-full  bg-zinc-800 p-1 px-2 text-xs text-zinc-300">Albums</div>
+      </SideMenuItem>
+
+     <SideMenuItem href='/#'>
+        <div class="flex justify-between flex-row flex-1">
+          <div class="flex flex-row items-center gap-4">
+            <SearchIcon></SearchIcon>
+          </div>
+          <div class="flex flex-row items-center gap-3">
+            Recents
+            <BurgerIcon></BurgerIcon>
+          </div>
+        </div>
+      </SideMenuItem>
+    </ul>
+
+    {
+      playlists.map(playlist=><SideMenuCard playlist={playlist}></SideMenuCard>)
+    }
+
+  </div>
+</nav>
