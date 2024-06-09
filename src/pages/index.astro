@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import { playlists } from '../lib/data';
 import PlaylistItemCard from '../components/PlaylistItemCard.astro'
+import Greeting from '@/components/Greeting.svelte';
 ---
 <Layout title="Spotify">
 <div
@@ -11,10 +12,8 @@ import PlaylistItemCard from '../components/PlaylistItemCard.astro'
 
   <!--<PageHeader/> -->
 
-  <div class="relative z-10 px-6 ">
-  <!--<Greetings/> -->
-
-  <h1>Buenos dias</h1>
+  <div class="relative z-10 px-6 pt-4 ">
+      <Greeting/>
 <div class="flex flex-wrap mt-6 gap-4">
     {
     playlists.map(playlist=> <PlaylistItemCard playlist={playlist}></PlaylistItemCard>)
