@@ -1,8 +1,10 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { playlists } from '../lib/data';
+import { fetch_all_playlists } from '../lib/data';
 import PlaylistItemCard from '../components/PlaylistItemCard.astro'
 import Greeting from '@/components/Greeting.svelte';
+
+const playlists = await fetch_all_playlists() as any[]
 ---
 <Layout title="Spotify">
 <div

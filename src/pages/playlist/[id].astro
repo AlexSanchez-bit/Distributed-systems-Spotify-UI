@@ -3,18 +3,24 @@
 import Layout from '../../layouts/Layout.astro';
 import { playlists, playlists } from '../../lib/data';
 import PlaylistItemCard from '../../components/PlaylistItemCard.astro'
+import PlayableSong from '../../components/PlayableSong.vue'
 
 
-import {allPlaylists,songs} from '../../lib/data.ts'
+import {get_playlist_by_id} from '../../lib/data.ts'
 
 const {id} = Astro.params
 
 
-const playlist = allPlaylists.find(playlist=>playlist.id === id)
+const playlist =await get_playlist_by_id(id)
 
-const playlistSongs = songs.filter(song=> song.albumId === playlist.albumId )
-
+const playlistSongs = playlist.songs??[]
 ---
+
+<script define:vars={{ playlist}}>
+  if (playlist == undefined) 
+    window.location.href = '/'
+} 
+</script>
 
 <Layout title="Spotify">
 
@@ -45,16 +51,21 @@ const playlistSongs = songs.filter(song=> song.albumId === playlist.albumId )
         <div class="flex-1 flex items-end">
           <div class="text-sm text-gray-300 font-normal">
              <div transition:name=`playlist ${id} artists`>
-               <span>{playlist.artists.join(', ')}</span>
+               <span>{playlist.artists}</span>
             </div>
             <p>
-              <span class="text-white">50 canciones</span>, 3h aproximadamente
+              <span class="text-white">{playlistSongs.length} canciones</span>
             </p>
           </div>
           </div>
       </div>
 
+
+
     </header>
+    {
+      playlist.songs?.map((song)=>(<PlayableSong track="song" client:only="vue" ></PlayableSong>))
+    }
 
   <div class="relative z-10 px-6 ">
   <!--<Greetings/> -->

@@ -7,7 +7,79 @@ export interface Playlist {
   color: (typeof colors)[keyof typeof colors];
   cover: string;
   artists: string[];
+  songs?: { author: string; key: number; name: string }[];
 }
+
+async function get_host_direction() {
+  return "http://localhost:8081";
+}
+
+export const get_playlist_by_id = async (id) => {
+  const url = (await get_host_direction()) + `/get-playlist/${id}`;
+
+  try {
+    const response = await fetch(url, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const resp = await response.json();
+    console.log(resp);
+    return {
+      id: resp.id,
+      albumId: resp.id,
+      title: resp.title,
+      color: colors.rose,
+      cover: "https://f4.bcbits.com/img/a1435058381_65.jpg",
+      artists: [resp.author],
+      songs: resp.songs,
+    };
+  } catch (err) {
+    return [];
+  }
+};
+
+export const fetch_all_playlists = async () => {
+  const url = (await get_host_direction()) + "/get-all-playlists";
+  const data = { from: 0, to: 20 }; // Definir los límites from y to
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const resp = await response.json();
+    console.log(resp);
+    return resp.items
+      .filter(
+        (elem) => elem[0] && elem != [] && elem != undefined && elem != null,
+      )
+      .map((playlist) => ({
+        id: playlist[0],
+        albumId: playlist[0],
+        title: playlist[1],
+        color: colors.rose,
+        cover: "https://f4.bcbits.com/img/a1435058381_65.jpg",
+        artists: ["Alex", "Carlos"],
+      }));
+  } catch (err) {
+    return [];
+  }
+};
 
 export const playlists: Playlist[] = [
   {
