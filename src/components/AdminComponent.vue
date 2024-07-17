@@ -116,8 +116,12 @@ watch(playlist.songs, (newval, _oldval) => {
 // Función para guardar una nueva playlist o actualizar una existente
 const submitPlaylist = async () => {
   const host = await get_host_direction();
-  const { title, songs, author, id } = playlist;
-  console.log(playlist, songs);
+  const { title, author, id } = { ...playlist };
+  const songs = [];
+  playlist.songs.forEach((el) => {
+    songs.push({ ...el });
+  });
+  console.log(songs, playlist);
   if (edit.value) {
     fetch(`${host}/update-playlist`, {
       method: "PUT",

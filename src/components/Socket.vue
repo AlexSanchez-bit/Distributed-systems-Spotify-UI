@@ -4,6 +4,7 @@
     <div
       class="flex flex-row transition-all duration-75 justify-between items-center h-full w-full px-4 z-50"
     >
+      <div>{{ current_song?.name }}</div>
       <button @click="setPlay" class="bg-white rounded-full p-4 text-black">
         <Play v-if="!play" />
         <Pause v-else />
@@ -23,5 +24,5 @@ import AudioBar from "./AudioBar.vue";
 
 import { usePlayerState } from "../composables/usePlayComposable";
 
-const { play, setPlay, played, downloaded } = usePlayerState();
+const { play, setPlay, played, downloaded, current_song } = usePlayerState();
 </script>

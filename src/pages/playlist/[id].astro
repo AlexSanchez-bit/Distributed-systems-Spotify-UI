@@ -13,14 +13,9 @@ const {id} = Astro.params
 
 const playlist =await get_playlist_by_id(id)
 
-const playlistSongs = playlist.songs??[]
+const playlistSongs = playlist.songs
 ---
 
-<script define:vars={{ playlist}}>
-  if (playlist == undefined) 
-    window.location.href = '/'
-} 
-</script>
 
 <Layout title="Spotify">
 
@@ -30,7 +25,7 @@ const playlistSongs = playlist.songs??[]
     transition:name=`playlist ${id} box`
 >
 
-    <header class="flex flex-row gap-8 p-6">
+    <header class="flex flex-row gap-8 p-6 z-20">
 
       <picture class="w-44 h-44 aspect-square flex-none rounded-md">
       <img src={playlist.cover} alt={`Cover of ${playlist.title}`} class="rounded-md object-cover w-full "
@@ -63,9 +58,14 @@ const playlistSongs = playlist.songs??[]
 
 
     </header>
+
+    <div class="z-20">
+
     {
-      playlist.songs?.map((song)=>(<PlayableSong track="song" client:only="vue" ></PlayableSong>))
+playlist.songs.map((song)=>(<PlayableSong track={song} client:only="vue" ></PlayableSong>))
     }
+
+    </div>
 
   <div class="relative z-10 px-6 ">
   <!--<Greetings/> -->

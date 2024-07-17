@@ -1,18 +1,21 @@
 <template>
   <div class="spotify-player">
-    <img :src="track.albumCover" :alt="track.album" class="album-cover" />
     <div class="track-info">
       <h3 class="track-name">{{ track.name }}</h3>
-      <p class="artist-name">{{ track.artist }}</p>
+      <p class="artist-name">{{ track.author }}</p>
     </div>
     <button @click="togglePlay" class="play-button">
-      <i :class="isPlaying ? 'fas fa-pause' : 'fas fa-play'"></i>
+      <Play v-if="!isPlaying" />
+      <Pause v-else />
     </button>
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import Play from "@/icons/Play.vue";
+import Pause from "@/icons/Pause.vue";
+import { usePlayerState } from "@/composables/usePlayComposable";
+import { ref, toRefs } from "vue";
 
 const props = defineProps({
   track: {
@@ -20,19 +23,22 @@ const props = defineProps({
     required: true,
     default: () => ({
       name: "Nombre de la canción",
-      artist: "Artista",
-      album: "Álbum",
-      albumCover: "https://via.placeholder.com/300",
-      spotifyUri: "spotify:track:1234567890",
+      author: "Artista",
+      key: 12,
     }),
   },
 });
 
+const { track } = toRefs(props);
+const player_state = usePlayerState();
 const isPlaying = ref(false);
 
 const togglePlay = () => {
   isPlaying.value = !isPlaying.value;
   // Aquí iría la lógica para reproducir/pausar la canción usando el SDK de Spotify
+  player_state.current_song.value = track.value;
+  console.log(track);
+  player_state.setPlay(track.key);
   console.log(
     `${isPlaying.value ? "Reproduciendo" : "Pausando"} ${props.track.name}`,
   );

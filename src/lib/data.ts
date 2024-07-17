@@ -45,7 +45,7 @@ export const get_playlist_by_id = async (id) => {
       songs: resp.songs,
     };
   } catch (err) {
-    return [];
+    return null;
   }
 };
 

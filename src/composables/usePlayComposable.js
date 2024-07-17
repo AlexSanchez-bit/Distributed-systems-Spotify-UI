@@ -1,10 +1,11 @@
 import { get_host_direction } from "@/lib/data";
 import { io } from "socket.io-client";
+import { server } from "typescript";
 import { ref, watch, computed } from "vue";
 
-export let current_song = null;
-
 export function usePlayerState() {
+  const current_song = ref(0);
+
   let audioContext = new (window.AudioContext || window.webkitAudioContext)();
   let receivedChunks = {};
   let currentSource = null;
@@ -25,8 +26,9 @@ export function usePlayerState() {
     try {
       console.log("buscando cancion");
       const server_direction = await get_host_direction();
+      console.log(server_direction);
       const resp = await (
-        await fetch(`${server_direction}/get-song/${current_song.id}`)
+        await fetch(`${server_direction}/get-song/${current_song.value.key}`)
       ).json();
       console.log(resp);
       create_socket(server_direction + resp.port);
@@ -140,5 +142,5 @@ export function usePlayerState() {
     );
   });
 
-  return { play, setPlay, played, downloaded };
+  return { play, setPlay, played, downloaded, current_song };
 }
