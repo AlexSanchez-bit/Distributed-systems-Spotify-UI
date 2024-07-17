@@ -1,6 +1,9 @@
-import { usePlayerStore } from "@/stores/musicPlayStore";
+import { get_host_direction } from "@/lib/data";
 import { io } from "socket.io-client";
 import { ref, watch, computed } from "vue";
+
+export let current_song = null;
+
 export function usePlayerState() {
   let audioContext = new (window.AudioContext || window.webkitAudioContext)();
   let receivedChunks = {};
@@ -12,14 +15,8 @@ export function usePlayerState() {
   const song_info = ref(null);
   const play = ref(false);
 
-  const playSongStore = usePlayerStore();
-
   let socket;
   let port;
-
-  watch(playSongStore.song_playing, (newval, _oldval) => {
-    setPlay();
-  });
 
   async function setPlay() {
     const audioContext = new (window.AudioContext ||
@@ -27,13 +24,12 @@ export function usePlayerState() {
     play.value = !play.value;
     try {
       console.log("buscando cancion");
+      const server_direction = await get_host_direction();
       const resp = await (
-        await fetch(
-          `http://localhost:5000/get-song/${playSongStore.song_playing}`,
-        )
+        await fetch(`${server_direction}/get-song/${current_song.id}`)
       ).json();
       console.log(resp);
-      create_socket("http://localhost:" + resp.port);
+      create_socket(server_direction + resp.port);
     } catch (err) {
       console.log("error");
       console.log(err);

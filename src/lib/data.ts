@@ -1,5 +1,5 @@
 import { colors } from "./colors";
-
+import { getServerUrl } from "./serverdescovery";
 export interface Playlist {
   id: string;
   albumId: number;
@@ -10,12 +10,16 @@ export interface Playlist {
   songs?: { author: string; key: number; name: string }[];
 }
 
-async function get_host_direction() {
-  return "http://localhost:8081";
+let last_seeing = "http://127.0.0.1:8081";
+export async function get_host_direction() {
+  last_seeing = await getServerUrl(last_seeing);
+  return last_seeing;
 }
 
 export const get_playlist_by_id = async (id) => {
   const url = (await get_host_direction()) + `/get-playlist/${id}`;
+
+  console.log(url);
 
   try {
     const response = await fetch(url, {
@@ -45,9 +49,9 @@ export const get_playlist_by_id = async (id) => {
   }
 };
 
-export const fetch_all_playlists = async () => {
+export const fetch_all_playlists = async (from = 0, to = 10) => {
   const url = (await get_host_direction()) + "/get-all-playlists";
-  const data = { from: 0, to: 20 }; // Definir los límites from y to
+  const data = { from, to }; // Definir los límites from y to
 
   try {
     const response = await fetch(url, {

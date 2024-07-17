@@ -73,6 +73,7 @@
 <script setup>
 import { ref, watch } from "vue";
 
+import { get_host_direction, playlists } from "@/lib/data";
 const props = defineProps({
   modelValue: Array,
 });
@@ -121,7 +122,7 @@ const uploadFile = async (index) => {
   formData.append("file", file.value);
 
   try {
-    const response = await fetch("http://localhost:8081/upload-file", {
+    const response = await fetch(`${await get_host_direction()}/upload-file`, {
       method: "POST",
       body: formData,
     });
@@ -131,9 +132,9 @@ const uploadFile = async (index) => {
     }
 
     console.log(response);
-    const data = await response.text();
+    const data = await response.json();
     console.log(data);
-    songs.value[index].id = data;
+    songs.value[index].id = data.filename;
     console.log("Respuesta del servidor:", data);
   } catch (error) {
     console.error("Hubo un problema con la petición fetch:", error);

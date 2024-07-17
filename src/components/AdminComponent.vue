@@ -13,7 +13,7 @@
               >Nombre de la Playlist</label
             >
             <input
-              v-model="playlist.name"
+              v-model="playlist.title"
               type="text"
               id="playlistName"
               name="playlistName"
@@ -54,6 +54,7 @@
           :key="playlist.id"
           :playlist="playlist"
           @selectPlaylist="selectPlaylist"
+          @deletedPlaylist="deletedPlaylist"
         />
       </div>
     </div>
@@ -61,57 +62,124 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+import {
+  get_host_direction,
+  fetch_all_playlists,
+  get_playlist_by_id,
+} from "@/lib/data";
+import { ref, reactive, watch, onMounted } from "vue";
 import Playlist from "./utils/Playlist.vue";
 import SongInput from "./utils/SongInput.vue";
 
 // Datos de ejemplo de playlists
-const playlists = ref([
-  { id: 1, name: "Playlist 1", author: "Autor 1", songs: [] },
-  { id: 2, name: "Playlist 2", author: "Autor 2", songs: [] },
-]);
+const playlists = ref([]);
+
+onMounted(async () => {
+  playlists.value = await fetch_all_playlists(0, 100);
+  console.log(playlists.value);
+});
 
 // Estado de la playlist actualmente seleccionada para editar
 const selectedPlaylist = ref(playlists.value[0]);
 
+const edit = ref(false);
+
 const playlist = reactive({
-  name: "",
+  title: "",
   author: "",
   songs: [],
+  id: null,
 });
 
 // Función para seleccionar una playlist y mostrar sus detalles en el formulario
-const selectPlaylist = (newplaylist) => {
-  playlist.name = newplaylist.name;
-  playlist.author = newplaylist.author;
-  playlist.songs = newplaylist.songs;
+const selectPlaylist = async (newplaylist) => {
+  const playl = await get_playlist_by_id(newplaylist.albumId);
+  console.log(playl);
+  edit.value = true;
+  playlist.author = playl.artists[0];
+  playlist.title = playl.title;
+  playlist.id = playl.albumId;
+
+  playl.songs.forEach((element) => {
+    playlist.songs.push({
+      author: element.author,
+      name: element.name,
+      id: element.key.toString(),
+    });
+  });
 };
 
+watch(playlist.songs, (newval, _oldval) => {
+  console.log(newval, _oldval, playlist.songs);
+});
+
 // Función para guardar una nueva playlist o actualizar una existente
-const submitPlaylist = () => {
-  fetch("http://localhost:8081/add-playlist", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      title: playlist.name,
-      author: playlist.author,
-      songs: playlist.songs,
-    }),
-  })
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-      return response.json();
+const submitPlaylist = async () => {
+  const host = await get_host_direction();
+  const { title, songs, author, id } = playlist;
+  console.log(playlist, songs);
+  if (edit.value) {
+    fetch(`${host}/update-playlist`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+        author: author,
+        songs: songs,
+        id: id,
+      }),
     })
-    .then((data) => {
-      console.log("Respuesta del servidor:", data);
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Respuesta del servidor:", data);
+      })
+      .catch((error) => {
+        console.error("Hubo un problema con la petición fetch:", error);
+      });
+  } else {
+    fetch(`${host}/add-playlist`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        title: title,
+        author: author,
+        songs: songs,
+      }),
     })
-    .catch((error) => {
-      console.error("Hubo un problema con la petición fetch:", error);
-    });
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        console.log("Respuesta del servidor:", data);
+      })
+      .catch((error) => {
+        console.error("Hubo un problema con la petición fetch:", error);
+      });
+  }
+  playlist.title = "";
+  playlist.author = "";
+  playlist.id = null;
+  edit.value = false;
+
+  while (playlist.songs.length > 0) {
+    playlist.songs.pop();
+  }
+};
+const deletedPlaylist = (id) => {
+  console.log("removing");
+  playlists.value = playlists.value.filter((el) => el.albumId != id);
 };
 </script>
 
