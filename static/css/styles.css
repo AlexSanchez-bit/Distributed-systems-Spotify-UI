@@ -118,8 +118,22 @@ option {
   display: flex;
   flex-direction: column;
   align-items: center;
+  z-index: 900;
+  background: black;
+  padding-left: 30px;
+  padding-right: 30px;
 }
 
+#song_artist {
+  color: white;
+}
+.song-info-container {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-items: between;
+  width: 100%;
+}
 .player-controls {
   display: flex;
   justify-content: space-around;
@@ -134,12 +148,13 @@ option {
 .current-song {
   text-align: center;
   margin-top: 10px;
+  color: #1db954;
 }
 
 .progress-container {
   width: 100%;
   height: 10px;
-  background-color: #e0e0e0;
+  background-color: #afa0aa;
   border-radius: 5px;
   overflow: hidden;
   margin: 10px 0;

@@ -67,14 +67,6 @@
 
       <!-- Reproductor en la barra inferior -->
       <div class="player">
-        <div class="player-controls">
-          <button class="prev-btn">Previous</button>
-          <button id="play-btn" onclick="togglePause()" class="play-btn">
-            Play
-          </button>
-          <button class="next-btn">Next</button>
-        </div>
-
         <div class="progress-container" onclick="seek(event)">
           <div class="progress-bar">
             <div class="progress-buffered"></div>
@@ -82,19 +74,19 @@
           </div>
         </div>
 
-        <div class="volume-control">
-          <input
-            type="range"
-            class="volume-slider"
-            min="0"
-            max="100"
-            value="50"
-          />
-        </div>
+        <div class="song-info-container">
+          <div class="player-controls">
+            <!-- <button class="prev-btn">Previous</button> -->
+            <button id="play-btn" onclick="togglePause()" class="play-btn">
+              Play
+            </button>
+            <!-- <button class="next-btn">Next</button> -->
+          </div>
 
-        <div class="current-song">
-          <h3 id="song_name">Current Song</h3>
-          <p id="song_artist">Artist Name</p>
+          <div class="current-song">
+            <h3 id="song_name">...</h3>
+            <p id="song_artist">...</p>
+          </div>
         </div>
       </div>
     </div>
