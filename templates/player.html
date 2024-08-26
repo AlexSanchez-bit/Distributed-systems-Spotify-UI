@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spotify Clone</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div id="load-container"></div>
+    <div class="container">
+      <h1>Spotify Clone</h1>
+
+      <div id="search">
+        <input
+          type="text"
+          id="search-input"
+          placeholder="Search songs or playlists"
+        />
+        <button onclick="search()">Search</button>
+      </div>
+
+      <div id="player">
+        <h2>Now Playing</h2>
+        <p id="now-playing">No song selected</p>
+        <button onclick="playpause()">Play/Pause</button>
+      </div>
+
+      <h2>Playlists</h2>
+      <ul id="playlist-list">
+        {% for playlist in playlists %}
+        <li>
+          <h3>{{ playlist.name }}</h3>
+          <ul>
+            {% for song in playlist.songs %}
+            <li onclick="playSong('{{ song.title }}', '{{ song.artist }}')">
+              {{ song.title }} by {{ song.artist }}
+            </li>
+            {% endfor %}
+          </ul>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <script src="{{ url_for('static', filename='js/player.js') }}"></script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+pydub 
+requests
+netifaces
+Flask
+websocket-client
+Flask-SocketIO
+Flask-CORS

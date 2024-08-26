@@ -1,0 +1,210 @@
+body {
+  font-family: "Spotify Circular", Arial, sans-serif;
+  background-color: #121212;
+  margin: 0;
+  padding: 0;
+  color: #fff;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* Sidebar de Playlists */
+.sidebar {
+  background-color: #000;
+  padding: 20px;
+  width: 240px;
+  height: 100%;
+  overflow-y: auto;
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+h2 {
+  font-size: 16px;
+  margin-bottom: 20px;
+  color: #fff;
+}
+
+select,
+input[type="text"],
+input[type="file"] {
+  width: calc(100% - 20px);
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #282828;
+  color: #fff;
+  border: 1px solid #282828;
+  border-radius: 5px;
+}
+
+.search-input {
+  background-color: #333;
+  border: none;
+  border-radius: 20px;
+  color: #fff;
+  padding: 10px 20px;
+  width: 100%;
+  margin-bottom: 20px;
+  font-size: 14px;
+}
+
+.playlist-list {
+  list-style-type: none;
+  padding: 0;
+}
+
+.playlist-item {
+  cursor: pointer;
+  padding: 10px 0;
+  font-size: 14px;
+}
+
+.playlist-item:hover {
+  color: #1db954;
+}
+
+option {
+  padding: 20px;
+}
+
+/* Contenido principal: Lista de Canciones */
+.main-content {
+  background-color: #121212;
+  flex-grow: 1;
+  padding: 20px;
+  margin-left: 260px; /* Deja espacio para el sidebar */
+  overflow-y: auto;
+}
+
+.song-list {
+  margin-bottom: 20px;
+}
+
+.song-items {
+  list-style-type: none;
+  padding: 0;
+}
+
+.song-item {
+  border-bottom: 1px solid #404040;
+  padding: 10px 0;
+  display: flex;
+  justify-content: space-between;
+}
+
+.song-item h3 {
+  margin: 0;
+  font-size: 14px;
+  color: #fff;
+}
+
+.song-item p {
+  margin: 0;
+  font-size: 12px;
+  color: #b3b3b3;
+}
+
+.song-item:hover {
+  color: #1db954;
+}
+
+/* Reproductor en la barra inferior */
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.player-controls {
+  display: flex;
+  justify-content: space-around;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.volume-control {
+  margin-top: 10px;
+}
+
+.current-song {
+  text-align: center;
+  margin-top: 10px;
+}
+
+.progress-container {
+  width: 100%;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  margin: 10px 0;
+}
+
+.progress-bar {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.progress-buffered {
+  position: absolute;
+  width: 0;
+  height: 100%;
+  background-color: white;
+  z-index: 1;
+}
+
+.progress-played {
+  position: absolute;
+  width: 0;
+  height: 100%;
+  background-color: green;
+  z-index: 2;
+}
+
+.load_page {
+  display: flex;
+
+  justify-content: center;
+  align-items: center;
+
+  position: fixed;
+  width: 100vw;
+  height: 100vh;
+}
+
+.loader {
+  width: 48px;
+  height: 48px;
+  border: 5px solid #fff;
+  border-bottom-color: transparent;
+  border-radius: 50%;
+  display: inline-block;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite;
+}
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+.playlist-title {
+  display: block;
+  font-size: large;
+  color: #00af00;
+  cursor: pointer;
+}
+
+#playlist-name {
+  color: #00af00;
+  font-size: large;
+}

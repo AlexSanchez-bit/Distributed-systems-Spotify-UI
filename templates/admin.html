@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Music Admin</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/admin.css') }}"
+    />
+  </head>
+  <body>
+    <div id="load-container"></div>
+    <div class="container">
+      <h1>Music Admin Panel</h1>
+
+      <div class="playlist-filter">
+        <input type="text" id="filter-title" placeholder="Filter by title" />
+        <input type="text" id="filter-author" placeholder="Filter by author" />
+        <select id="filter-gender">
+          <option value="" selected>Seleccione un valor</option>
+          <option value="Rock">Rock</option>
+          <option value="Romance">Romance</option>
+          <option value="Metal">Metal</option>
+          <option value="Pop">Pop</option>
+          <option value="Jazz">Jazz</option>
+          <option value="Balad">Balad</option>
+        </select>
+        <button onclick="filterPlaylists()">Filter</button>
+      </div>
+
+      <div class="playlist-form">
+        <h2>Create/Update Playlist</h2>
+        <input type="hidden" id="playlist-id" />
+        <input type="text" id="playlist-title" placeholder="Playlist Title" />
+        <input type="text" id="playlist-author" placeholder="Author" />
+        <select id="playlist-gender">
+          <option value="" selected>Seleccione un valor</option>
+          <option value="Rock">Rock</option>
+          <option value="Romance">Romance</option>
+          <option value="Metal">Metal</option>
+          <option value="Pop">Pop</option>
+          <option value="Jazz">Jazz</option>
+          <option value="Balad">Balad</option>
+        </select>
+        <div class="horizontal container">
+          <button onclick="savePlaylist()">Save Playlist</button>
+          <div id="mode-edit-cancel">
+            <button onclick="disableModeEdit()">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="song-form">
+        <h2>Add Song to Playlist</h2>
+        <input type="hidden" id="song-playlist-id" />
+        <input type="text" id="song-name" placeholder="Song Name" />
+        <input type="text" id="song-author" placeholder="Author" />
+        <input type="file" id="song-file" accept="audio/mp3" />
+        <select id="song-gender">
+          <option value="Rock" selected>Rock</option>
+          <option value="Romance">Romance</option>
+          <option value="Metal">Metal</option>
+          <option value="Pop">Pop</option>
+          <option value="Jazz">Jazz</option>
+          <option value="Balad">Balad</option>
+        </select>
+        <button onclick="addSong()">Add Song</button>
+      </div>
+
+      <h2>Songs</h2>
+      <div id="songs-container">
+        <!-- Songs of the selected playlist will be listed here -->
+      </div>
+
+      <h2>Playlists</h2>
+      <div id="playlists-container">
+        <!-- Playlists will be listed here -->
+      </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/admin.js') }}"></script>
+  </body>
+</html>

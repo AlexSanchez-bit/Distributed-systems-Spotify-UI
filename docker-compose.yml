@@ -1,0 +1,18 @@
+services:
+  client:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      - kademlia-network
+    cap_add:
+      - NET_BROADCAST
+    ports:
+      - "12345:54321"
+      - "8100:19009/udp"
+    restart: no
+    volumes:
+      - .:/app
+networks:
+  kademlia-network:
+    external: true
