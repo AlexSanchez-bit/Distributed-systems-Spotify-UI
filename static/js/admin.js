@@ -88,8 +88,9 @@ async function addSong() {
   disableLoad();
 }
 
-function removeSong(key) {
+async function removeSong(key) {
   songs = songs.filter((song) => song.key != key);
+  loadSongs();
 }
 
 async function savePlaylist() {

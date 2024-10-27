@@ -39,9 +39,37 @@
 
       <!-- Contenido principal: Lista de Canciones -->
       <div class="main-content">
+        <button class="toggle-button" onclick="togglePanel()">Filtros</button>
+        <div class="sliding-panel" id="song-filter-panel">
+          <input
+            type="text"
+            id="songs-filter"
+            class="search-input"
+            oninput="filterSong()"
+            placeholder="Buscar canciones por nombre"
+          />
+          <input
+            type="text"
+            id="songs-author-filter"
+            class="search-input"
+            oninput="filterSong()"
+            placeholder="Buscar canciones por autor"
+          />
+          <select oninput="filterSong()" id="songs-gender" class="search-input">
+            <option value="" selected>Any</option>
+            <option value="Rock">Rock</option>
+            <option value="Romance">Romance</option>
+            <option value="Metal">Metal</option>
+            <option value="Pop">Pop</option>
+            <option value="Jazz">Jazz</option>
+            <option value="Balad">Balad</option>
+          </select>
+        </div>
+
         <div class="song-list">
           <h1 id="playlist-name"></h1>
           <h2>Songs</h2>
+
           <!-- <input -->
           <!--   type="text" -->
           <!--   id="song-filter" -->

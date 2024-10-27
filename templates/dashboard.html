@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block title %}Agenda{% endblock %} {% block content
+%}
+<h3>Bienvenido, {{ username }}!</h3>
+
+<div class="agenda">
+  <h4>Tu Agenda</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Evento</th>
+        <th>Descripción</th>
+        <th>Inicio</th>
+        <th>Fin</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event in events %}
+      <tr>
+        <td>{{ event.name }}</td>
+        <td>{{ event.description }}</td>
+        <td>{{ event.start }}</td>
+        <td>{{ event.end }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{{ url_for('create_event') }}" class="btn btn-success"
+    >Crear nuevo evento</a
+  >
+</div>
+{% endblock %}

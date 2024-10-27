@@ -1,0 +1,31 @@
+{% extends "base.html" %} {% block title %}Grupos{% endblock %} {% block content
+%}
+<div class="agenda">
+  <h4>Grupos</h4>
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Nombre del Grupo</th>
+        <th>Acciones</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for group in groups %}
+      <tr>
+        <td>{{ group.name }}</td>
+        <td>
+          <a
+            href="{{ url_for('schedule', group_id=group.id) }}"
+            class="btn btn-info"
+            >Ver Agenda</a
+          >
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  <a href="{{ url_for('create_group') }}" class="btn btn-success"
+    >Crear nuevo grupo</a
+  >
+</div>
+{% endblock %}

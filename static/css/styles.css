@@ -223,3 +223,41 @@ option {
   color: #00af00;
   font-size: large;
 }
+.toggle-button {
+  background-color: #00af00;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 10px;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+/* Contenedor del panel */
+.sliding-panel {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0 10px;
+}
+
+/* Panel visible */
+.sliding-panel.open {
+  max-height: 200px; /* Ajusta según el contenido */
+  padding: 10px;
+}
+
+/* Estilos de los inputs y select */
+.search-input {
+  width: 100%;
+  padding: 8px;
+  margin: 5px 0;
+  box-sizing: border-box;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}

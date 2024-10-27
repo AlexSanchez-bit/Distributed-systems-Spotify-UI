@@ -1,0 +1,27 @@
+{% extends "base.html" %} {% block title %}Agenda del Grupo{% endblock %} {%
+block content %}
+<h3>Agenda del Grupo: {{ group.name }}</h3>
+
+<div class="agenda">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Evento</th>
+        <th>Descripción</th>
+        <th>Inicio</th>
+        <th>Fin</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for event in group.events %}
+      <tr>
+        <td>{{ event.name }}</td>
+        <td>{{ event.description }}</td>
+        <td>{{ event.start }}</td>
+        <td>{{ event.end }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

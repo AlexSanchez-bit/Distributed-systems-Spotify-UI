@@ -1,3 +1,14 @@
+function togglePanel() {
+  const panel = document.getElementById("song-filter-panel");
+  panel.classList.toggle("open");
+
+  // Cambiar el texto del botón según el estado del panel
+  const button = document.querySelector(".toggle-button");
+  button.textContent = panel.classList.contains("open")
+    ? "Ocultar Filtros"
+    : "Mostrar Filtros";
+}
+
 function enableLoad() {
   document.getElementById("load-container").innerHTML = `
 
@@ -9,7 +20,7 @@ function enableLoad() {
 }
 
 function filterPlaylist(event) {
-  console.log(event.srcElement.value);
+  console.log("element: ", event.srcElement.value);
   loadPlaylists({
     title: event.srcElement.value,
     author: event.srcElement.value,
@@ -23,7 +34,32 @@ function disableLoad() {
   } catch (err) {}
 }
 
-async function loadPlaylists(params = null) {
+async function filterSong() {
+  const name = document.getElementById("songs-filter").value;
+  const author = document.getElementById("songs-author-filter").value;
+  const gender = document.getElementById("songs-gender").value;
+  enableLoad();
+  const resp = await (
+    await fetch(`/get-all-songs`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        from: 0,
+        to: 100,
+        filter: { title: name, author, gender },
+      }),
+    })
+  ).json();
+
+  console.log(resp);
+  document.getElementById("playlist-name").innerHTML = resp.title;
+  loadSongs(resp.songs);
+  disableLoad();
+}
+
+async function loadPlaylists(params = {}) {
   enableLoad();
   const playlistConstainer = document.getElementById("playlist-container");
   playlistConstainer.innerHTML = "";

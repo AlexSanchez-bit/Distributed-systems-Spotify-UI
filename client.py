@@ -1,12 +1,7 @@
-import json
-from types import MethodType
-from flask_socketio import SocketIO, send, emit
-from flask import Flask, render_template, request, redirect, url_for
-from flask import Flask, jsonify
-import os
+from flask import Flask, render_template, redirect, url_for, request, jsonify, session
 import requests
+import os
 from serverfetch import test_host_or_find_one, udp_broadcast_and_receive
-import socketio
 
 host = udp_broadcast_and_receive()
 
@@ -18,155 +13,161 @@ def baseUrl():
 
 
 app = Flask(__name__)
-port = 54321
-mainsocketio = SocketIO(app, resources={r"/*": {"origins": "*"}}, port=port)
-remote_sockets = {}
+app.secret_key = "supersecretkey"  # Necesario para manejar sesiones
 
 
+# Función para obtener la URL base de la API
+
+
+# Ruta principal, mostrar dashboard o página de inicio
 @app.route("/")
-def home():
-    return render_template("index.html")
+def index():
+    if "username" in session:
+        return render_template("dashboard.html", username=session["username"])
+    return render_template("login.html")
 
 
-@app.route("/admin")
-def home_():
-    return render_template("admin.html")
+# Vista para el login
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
+        # Autenticación con la API
+        response = requests.post(
+            f"{baseUrl()}/auth", json={"username": username, "password": password}
+        )
+        if response.status_code == 200:
+            session["username"] = username
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html", error="Invalid credentials")
+    return render_template("login.html")
 
 
-@app.route("/get-server")
-def socket_conection():
-    if host is None:
-        return jsonify({"data": None, "error": {"message": " error"}})
-    return jsonify({"data": host, "error": None})
+# Vista para crear grupos
+@app.route("/create_group", methods=["GET", "POST"])
+def create_group():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        group_name = request.form["group_name"]
+        users = request.form.getlist("users")
+        # Crear grupo usando la API
+        response = requests.post(
+            f"{baseUrl()}/create_group", json={"name": group_name, "users": users}
+        )
+        if response.status_code == 201:
+            return redirect(url_for("groups"))
+        else:
+            return render_template("create_group.html", error="Error creating group")
+    # Obtener todos los usuarios para mostrar en el formulario
+    users_response = requests.get(f"{baseUrl()}/users")
+    users = users_response.json()
+    return render_template("create_group.html", users=users)
 
 
-@app.route("/get-all-playlists", methods=["POST"])
-def fetch_playlists():
-    filters = request.json
-    resp = requests.post(f"{baseUrl()}/get-all-playlists", json=filters)
-    if resp.status_code == 200:
-        result = resp.json()
-        return result
-    else:
-        return jsonify({"error": 500})
+# Vista para mostrar grupos
+@app.route("/groups")
+def groups():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    # Obtener los grupos desde la API
+    response = requests.get(f"{baseUrl()}/groups")
+    groups = response.json()
+    return render_template("groups.html", groups=groups)
 
 
-@app.route("/add-playlist", methods=["POST"])
-def upload_playlist():
-    data = request.json
-    print(data)
-    resp = requests.post(f"{baseUrl()}/add-playlist", json=data)
-    if resp.status_code == 201:
-        return resp.json(), 200
-    else:
-        return jsonify({"error": {"message": "Error from Host", "code": 500}}), 500
+# Vista para crear eventos grupales
+@app.route("/create_event", methods=["GET", "POST"])
+def create_event():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    if request.method == "POST":
+        event_name = request.form["event_name"]
+        description = request.form["description"]
+        start = request.form["start"]
+        end = request.form["end"]
+        # Crear evento usando la API
+        response = requests.post(
+            f"{baseUrl()}/create_event",
+            json={
+                "name": event_name,
+                "description": description,
+                "start": start,
+                "implied_users": [session["username"]],
+                "end": end,
+                "group_id": "",
+            },
+        )
+        if response.status_code == 201:
+            return redirect(url_for("events"))
+        else:
+            return render_template("create_event.html", error="Error creating event")
+
+    # Obtener grupos para asociar un evento
+    groups_response = requests.post(f"{baseUrl()}/groups", json={"filter": {}})
+    groups = groups_response.json()
+    return render_template("create_event.html", groups=groups)
 
 
-@app.route("/update-playlist", methods=["POST"])
-def update_playlist():
-    data = request.json
-    print(data)
-    resp = requests.put(f"{baseUrl()}/update-playlist", json=data)
-    if resp.status_code == 200:
-        return resp.json(), 200
-    else:
-        return jsonify({"error": {"message": "Error from Host", "code": 500}}), 500
+# Vista para mostrar eventos
+@app.route("/events")
+def events():
+    if "username" not in session:
+        return redirect(url_for("login"))
+
+    # Obtener eventos desde la API
+    response = requests.get(f"{baseUrl()}/events")
+    events = response.json()
+    return render_template("events.html", events=events)
 
 
-@app.route("/get-playlist/<id>")
-def get_playlist(id):
-    response = requests.get(f"{baseUrl()}/get-playlist/{id}")
+# Vista para visualizar la agenda de un grupo
+@app.route("/schedule/<int:group_id>")
+def schedule(group_id):
+    if "username" not in session:
+        return redirect(url_for("login"))
 
-    return response.json(), response.status_code
+    # Obtener agenda del grupo desde la API
+    response = requests.get(f"{baseUrl()}/groups/{group_id}")
+    group = response.json()
 
-
-@app.route("/remove-playlist/<id>")
-def remove_playlist(id):
-    response = requests.delete(f"{baseUrl()}/delete-playlist/{id}")
-    return response.json(), response.status_code
-
-
-@app.route("/upload-song", methods=["POST"])
-def upload_song():
-    if "file" not in request.files:
-        return jsonify({"message": "No file part"}), 400
-    file = request.files["file"]
-
-    if file.filename == "":
-        return jsonify({"message": "No selected file"}), 400
-
-    # El parámetro 'files' debe ser un diccionario en formato {'nombre_campo': archivo}
-    files = {"file": (file.filename, file.stream, file.mimetype)}
-
-    # Realiza la solicitud POST al endpoint de subida de archivos
-    response = requests.post(f"{baseUrl()}/upload-file", files=files)
-
-    return response.json(), 200
+    # Aquí podrías procesar la información para detectar conflictos en las agendas
+    return render_template("schedule.html", group=group)
 
 
-@app.route("/get-music-steam/<id>")
-def music_stream(id):
-    result = requests.get(f"{baseUrl()}/get-song/{id}")
-    if result.status_code != 200:
-        return jsonify({"message": "not found"}), 404
-    host_ip = result.json().get("host")
-    remote_socket = socketio.Client()
-    remote_socket.connect(f"ws://{host_ip}:{54321}")
+# Crear Usuarios
+@app.route("/create_user", methods=["GET", "POST"])
+def create_user():
+    if request.method == "POST":
+        username = request.form["username"]
+        password = request.form["password"]
 
-    # Guardar la conexión remota en el diccionario usando el id como clave
-
-    @remote_socket.on("song_info")
-    def handle_remote_message(data):
-        # Reenviar el mensaje recibido al cliente conectado a este servidor
-        mainsocketio.emit(
-            f"server_message_{id}",
-            {"command": "song_info", "data": data},
+        # Crear usuario usando la API
+        response = requests.post(
+            f"{baseUrl()}/create_user",
+            json={"name": username, "passw": password},
         )
 
-    @remote_socket.on("audio_chunk")
-    def handle_remote_message2(data):
-        # Reenviar el mensaje recibido al cliente conectado a este servidor
-        mainsocketio.emit(
-            f"server_message_{id}", {"command": "audio_chunk", "data": data}
-        )
+        if response.status_code == 201:
+            return redirect(url_for("index"))
+        else:
+            return render_template("create_user.html", error="Error creating user")
 
-    @remote_socket.on("disconnect")
-    def handle_remote_message3():
-        # Reenviar el mensaje recibido al cliente conectado a este servidor
-        music_stream(id)
-
-    remote_sockets[id] = remote_socket
-    return result.json(), 200
+    return render_template("create_user.html")
 
 
-@mainsocketio.on("client_message")
-def handle_client_message(data):
-    # Supongamos que el mensaje contiene el id de la canción para identificar el socket remoto
-    song_id = data.get("song_id")
-    remote_socket = remote_sockets.get(song_id)
-
-    if remote_socket:
-        # Reenviar el mensaje al WebSocket remoto correspondiente
-        remote_socket.emit(data.get("command"), data.get("params"))
-    else:
-        print(f"No active connection found for song id: {song_id}")
-
-
-@mainsocketio.on("test")
-def test():
-    print("test")
-    mainsocketio.emit("test")
+# Cerrar sesión
+@app.route("/logout")
+def logout():
+    session.pop("username", None)
+    return redirect(url_for("index"))
 
 
 my_ip = os.getenv("CURRENT_IP", "172.30.0.255")
+app.run(host=my_ip, port=54321, debug=True)
 print(f"mi ip es {my_ip}")
-# app.run(host=my_ip, debug=True, port=port)
-mainsocketio.run(
-    app,
-    host=my_ip,
-    port=port,
-    debug=True,
-    use_reloader=False,
-    log_output=False,
-    allow_unsafe_werkzeug=True,
-)
